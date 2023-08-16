@@ -83,13 +83,13 @@ class ChatAsyncConsumer(AsyncConsumer):
         print("Message Received: ", event['text'])
 
         chat_data = json.loads(event['text'])
-        group = group_collection.find_one({'group_name': self.group_name})
+        group = await group_collection.find_one({'group_name': self.group_name})
 
         new_chat = {
             'content': chat_data['msg'],
             'group_name': group['group_name']
         }
-        chat_collection.insert_one(new_chat)
+        await chat_collection.insert_one(new_chat)
 
         await self.channel_layer.group_send(self.group_name, {
             'type': 'chat.message',
